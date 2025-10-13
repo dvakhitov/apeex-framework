@@ -1,0 +1,71 @@
+@startuml
+' --------------------------
+' Core modules
+' --------------------------
+package "Core" {
+    class HttpKernelInterface
+    class RequestInterface
+    class ResponseInterface
+    class RouterInterface
+    class ControllerResolverInterface
+
+    class EntityManagerInterface
+    class UnitOfWorkInterface
+    class RepositoryInterface
+    class MapperRegistryInterface
+    class OrmEngineInterface
+    class ClassMetadata
+    class FieldMetadata
+    class AssociationMetadata
+
+    class ContainerInterface
+    class EventDispatcherInterface
+    class CommandRunnerInterface
+    class ConfigLoaderInterface
+    class LoggerInterface
+    class CacheInterface
+    class MigrationRunnerInterface
+    class BundleInterface
+    class LifecycleHookInterface
+}
+
+' --------------------------
+' Adapters
+' --------------------------
+package "Adapters" {
+    class FastAPIAdapter
+    class YAMLLoader
+    class SQLiteAdapter
+    class SQLAlchemyAdapter
+    class ClickAdapter
+}
+
+' --------------------------
+' Bundles / Modules
+' --------------------------
+package "Bundles" {
+    package "AppBundle" {
+        class AppBundle
+        class ProductController
+        class Product
+    }
+}
+
+' --------------------------
+' Dependencies
+' --------------------------
+Bundles --> Core
+Adapters --> Core
+AppBundle --> Adapters
+
+' --------------------------
+' ORM / Entity relations
+' --------------------------
+EntityManagerInterface --> UnitOfWorkInterface
+UnitOfWorkInterface --> RepositoryInterface
+RepositoryInterface --> MapperRegistryInterface
+MapperRegistryInterface --> ClassMetadata
+ClassMetadata --> FieldMetadata
+ClassMetadata --> AssociationMetadata
+
+@enduml
