@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Protocol, Type, runtime_checkable
 
 class ContainerException(Exception):
     pass
@@ -7,14 +7,20 @@ class ContainerException(Exception):
 class NotFoundException(ContainerException):
     pass
 
-class ContainerInterface(ABC):
+@runtime_checkable
+class ContainerInterface(Protocol):
+    """
+    Interface for a Dependency Injection container.
+    """
 
-    @abstractmethod
-    def get(self, service_id: str) -> Any:
-        """Returns service by ID or raises NotFoundException."""
-        ...
+    def set(self, name: str, service: Any) -> None:
+        """Register a service instance or factory by name."""
 
-    @abstractmethod
-    def has(self, service_id: str) -> bool:
-        """Returns True if service exists, False otherwise."""
-        ...
+    def get(self, name: str) -> Any:
+        """Retrieve a service by name; raise exception if not found."""
+
+    def has(self, name: str) -> bool:
+        """Check if a service is registered."""
+
+    def autowire(self, cls: Type) -> Any:
+        """Create an instance of cls, automatically resolving dependencies."""
