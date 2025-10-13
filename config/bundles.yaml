@@ -1,0 +1,9 @@
+DemoBundle:
+  enabled: true
+  services:
+    hello_service:
+      class: apeex.bundles.demo_bundle.services.hello_service.HelloService
+    hello_controller:
+      class: apeex.bundles.demo_bundle.controllers.hello_controller.HelloController
+      arguments:
+        - '@hello_service'

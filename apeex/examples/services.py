@@ -1,4 +1,4 @@
-# apeex/examples/services.py
+# apeex/examples/hello_services.py
 
 class Logger:
     """Simple logger service."""
