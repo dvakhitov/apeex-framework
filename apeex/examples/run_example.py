@@ -1,5 +1,5 @@
 # apeex/examples/run_example.py
-from apeex.container.container import Container
+from apeex.container import Container
 from apeex.examples.sample_bundle import SampleBundle
 
 # Create container

@@ -1,7 +1,5 @@
-# tests/test_http_kernel.py
-
 def test_kernel_initialization():
-    from apeex.http import Kernel
+    from apeex.http import HttpKernel
     from apeex.container.simple_container import SimpleContainer
     from apeex.http.simple_controller_resolver import SimpleControllerResolver
 
@@ -12,7 +10,7 @@ def test_kernel_initialization():
     container.register("controller_resolver", SimpleControllerResolver())
 
     # Initialize the Kernel with the container
-    kernel = Kernel(container=container)
+    kernel = HttpKernel(container=container)
 
     # Check that the Kernel object is created
     assert kernel is not None

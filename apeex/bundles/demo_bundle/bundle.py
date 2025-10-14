@@ -1,17 +1,21 @@
 from apeex.bundles.bundle import Bundle
-from apeex.container.container_interface import ContainerInterface
-from apeex.bundles.demo_bundle.services.hello_services import HelloService
-from apeex.bundles.demo_bundle.controllers.hello_controller import HelloController
+from apeex.contracts.container import ContainerInterface
+from apeex.adapters.http.router_adapter import RouterAdapter
+from .services.hello_services import HelloService
+from .controllers.hello_controller import HelloController
 
 class DemoBundle(Bundle):
-    """Example bundle demonstrating services and controllers."""
-
     def build(self, container: ContainerInterface) -> None:
+
+        # Register HelloService
         container.set("HelloService", HelloService())
-        container.set_factory("HelloController", lambda c: HelloController(c.get("HelloService")))
+        # Use existing router from container
+        router: RouterAdapter = container.get("router")
 
-    def boot(self, kernel):
-        print("DemoBundle booting...")
+        router.add_controller(HelloController, container)
 
-    def shutdown(self):
-        print("DemoBundle shutting down...")
+    def boot(self, kernel) -> None:
+        pass
+
+    def shutdown(self) -> None:
+        pass

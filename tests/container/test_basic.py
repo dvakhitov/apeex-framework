@@ -1,4 +1,4 @@
-from apeex.container.container import Container
+from apeex.container import Container
 
 class ServiceA:
     pass

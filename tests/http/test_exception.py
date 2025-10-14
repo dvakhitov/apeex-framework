@@ -1,4 +1,3 @@
-import pytest
 from apeex.http.exceptions import HttpException, NotFound, MethodNotAllowed
 
 

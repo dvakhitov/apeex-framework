@@ -1,6 +1,6 @@
 import inspect
 from typing import Any, Callable, Type, Dict
-from apeex.container.container_interface import ContainerInterface, NotFoundException
+from apeex.contracts.container import ContainerInterface, NotFoundException
 
 
 class Container(ContainerInterface):

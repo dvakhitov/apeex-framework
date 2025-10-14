@@ -1,5 +1,5 @@
 # apeex/bundles/bundle.py
-from apeex.container.container_interface import ContainerInterface
+from apeex.contracts.container import ContainerInterface
 from abc import ABC, abstractmethod
 
 class Bundle(ABC):

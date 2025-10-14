@@ -1,4 +1,4 @@
-from apeex.container.container_interface import ContainerInterface, NotFoundException
+from apeex.contracts.container import ContainerInterface, NotFoundException
 from typing import Any
 
 class SimpleContainer(ContainerInterface):

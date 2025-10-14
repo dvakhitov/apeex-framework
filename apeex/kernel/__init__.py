@@ -1,1 +1,1 @@
-from .kernel import Kernel
+from .core_kernel import CoreKernel

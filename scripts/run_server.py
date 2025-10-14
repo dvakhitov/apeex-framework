@@ -1,47 +1,27 @@
-from fastapi import FastAPI, Request, Response
+# scripts/run_server.py
+from fastapi import FastAPI, Request
 import uvicorn
-from apeex.http.kernel import Kernel
-from apeex.container.simple_container import SimpleContainer
-from apeex.http.simple_controller_resolver import SimpleControllerResolver
-from bundles.app_bundle.controllers.product_controller import ProductController
-from apeex.http.response_interface import ResponseInterface
+from scripts.bootstrap import bootstrap
 
-app = FastAPI()
+app = FastAPI(title="Apeex Framework Demo")
 
-# --- Setup framework manually (like in bootstrap) ---
-container = SimpleContainer()
-resolver = SimpleControllerResolver()
-container.register("controller_resolver", resolver)
+# Bootstrap возвращает core_kernel и http_kernel
+core_kernel, http_kernel = bootstrap()
 
-# Register routes
-resolver.add_route("/products", "GET", ProductController().list)
-
-kernel = Kernel(container)
-
-
-# --- FastAPI adapter ---
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-async def handle_request(request: Request, path: str):
-    # Convert FastAPI request to our internal RequestInterface
-    class SimpleRequest:
-        def __init__(self, path, method, body=None):
-            self.path = "/" + path
-            self.method = method
-            self.body = body
+async def handle_request(request: Request):
 
-    req = SimpleRequest(path, request.method)
+    body = await request.body()
+    print('run_server.handle_request')
+    # Создаём Apeex Request через HTTP Kernel
+    apeex_request = http_kernel.create_request_from_asgi(request.scope, body)
 
-    # Let the kernel handle it
-    response: ResponseInterface = kernel.handle(req)
+    # Обрабатываем и получаем ResponseInterface
+    response = http_kernel.handle(apeex_request)
 
-    # Convert our ResponseInterface to FastAPI Response
-    return Response(
-        content=response.body,
-        status_code=response.status_code,
-        headers=dict(response.headers),
-        media_type=response.headers.get("Content-Type", "application/json"),
-    )
+    # Преобразуем в FastAPI Response
+    return response.to_fastapi_response()
 
 
 if __name__ == "__main__":
-    uvicorn.run("scripts.run_server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,19 +1,12 @@
-# config/services.py
-from apeex.container.container import Container
-from apeex.bundles.demo_bundle.bundle import DemoBundle
-from apeex.bundles.demo_bundle.services.hello_services import HelloService
-from apeex.bundles.demo_bundle.controllers.hello_controller import HelloController
+from apeex.adapters.http.router_adapter import RouterAdapter
+from apeex.adapters.orm.orm_adapter import OrmAdapter
+from apeex.adapters.config.yaml_loader_adapter import YAMLLoaderAdapter
+from apeex.http.http_kernel import HttpKernel
 
-container = Container()
-
-# Регистрация сервисов напрямую
-container.set("hello_service", HelloService())
-
-# Регистрация контроллера через фабрику и autowiring
-container.set_factory("hello_controller", lambda c: HelloController(c.get("hello_service")))
-
-
-
-# Регистрация bundle
-demo_bundle = DemoBundle()
-demo_bundle.build(container)
+# Services dictionary: key - name in the container, value - class or factory
+SERVICES = {
+    "router": RouterAdapter,
+    "orm": OrmAdapter,
+    "config_loader": YAMLLoaderAdapter,
+    "http_kernel": lambda c: HttpKernel(c),
+}

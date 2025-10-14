@@ -1,5 +1,5 @@
 # bundles/app_bundle/bundle.py
-from apeex.bundle.bundle_interface import BundleInterface
+from apeex.contracts.bundle import BundleInterface
 from apeex.container import SimpleContainer
 
 class AppBundle(BundleInterface):

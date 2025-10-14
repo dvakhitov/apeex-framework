@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from typing import cast
-from apeex.orm.orm_engine_interface import OrmEngineInterface
-from apeex.orm.entity_manager_interface import EntityManagerInterface
+from apeex.contracts.orm.orm_engine_interface import OrmEngineInterface
+from apeex.contracts.orm.entity_manager_interface import EntityManagerInterface
 
 def test_orm_engine_interface_import_and_mock():
     # Check that OrmEngineInterface is importable

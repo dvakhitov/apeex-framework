@@ -1,6 +1,5 @@
 from typing import Any, Dict, Optional
-from urllib.parse import parse_qs, urlparse
-
+from urllib.parse import parse_qs
 
 class Request:
     """
@@ -47,3 +46,14 @@ class Request:
             query_string=query_string,
             body=body,
         )
+
+    def get(self, name: str, default: Any = None) -> Any:
+        """
+        Get a value from query_params or headers by name.
+        Tries query_params first, then headers.
+        """
+        print("apeex/http/Request", self.query_params)
+        if name in self.query_params:
+            return self.query_params[name]
+        # Потом ищем в headers
+        return self.headers.get(name.lower(), default)

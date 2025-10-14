@@ -1,7 +1,7 @@
 import json
 from typing import Mapping
-from apeex.http.request_interface import RequestInterface
-from apeex.http.response_interface import ResponseInterface
+from apeex.contracts.http.request_interface import RequestInterface
+from apeex.contracts.http.response_interface import ResponseInterface
 
 class ProductController:
     """Example controller for products."""

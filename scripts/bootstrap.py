@@ -1,51 +1,40 @@
 # scripts/bootstrap.py
-import json
-from bundles.app_bundle.controllers.product_controller import ProductController
-from apeex.http.kernel import Kernel
-from apeex.http.request_interface import RequestInterface
-from apeex.http.http_kernel_interface import HttpKernelInterface
-from apeex.container.simple_container import SimpleContainer
-from apeex.http.simple_controller_resolver import SimpleControllerResolver
+from apeex.container.container import Container
+from apeex.kernel.core_kernel import CoreKernel
+from apeex.http.http_kernel import HttpKernel
+from apeex.adapters.http.router_adapter import RouterAdapter
+from apeex.http.controller_resolver import ControllerResolver
+from config.services import SERVICES
+from apeex.bundles.demo_bundle.bundle import DemoBundle
 
-# ----------------------------
-# 1. Initialize the DI container
-# ----------------------------
-container = SimpleContainer()
 
-# Register services (adapters)
-resolver = SimpleControllerResolver()
-container.register("controller_resolver", resolver)
+def bootstrap() -> tuple[CoreKernel, HttpKernel]:
+    print('\nStart bootstrapping Apeex Kernel!!!\n')
 
-# ----------------------------
-# 2. Register routes
-# ----------------------------
-product_controller = ProductController()
-resolver.add_route("/products", "GET", product_controller.list)
+    # Создаём контейнер
+    container = Container()
 
-# ----------------------------
-# 3. Initialize the Kernel
-# ----------------------------
-kernel: HttpKernelInterface = Kernel(container)
+    # Регистрируем сервисы из конфига
+    for name, factory in SERVICES.items():
+        if callable(factory):
+            # передаем container внутрь фабрики
+            container.set_factory(name, lambda f=factory, c=container: f(c))
+        else:
+            container.set(name, factory())
 
-# ----------------------------
-# 4. Create a request
-# ----------------------------
-class SimpleRequest(RequestInterface):
-    def __init__(self, path: str, method: str):
-        self.path = path
-        self.method = method.upper()
+    # Регистрируем RouterAdapter и ControllerResolver
+    router = RouterAdapter()
+    container.set("router", router)
+    container.set("controller_resolver", ControllerResolver(container, router))
 
-request = SimpleRequest("/products", "GET")
-print("Registered routes:", resolver.routes)
-print("Request key:", (request.path, request.method))
-# ----------------------------
-# 5. Handle the request via the kernel
-# ----------------------------
-# Kernel internally uses the resolver from the container
-response = kernel.handle(request)
+    # Создаём CoreKernel (главное приложение)
+    core_kernel = CoreKernel(container)
+    core_kernel.register_bundle(DemoBundle())
+    core_kernel.bootstrap()
+    core_kernel.boot()
 
-# ----------------------------
-# 6. Print the result
-# ----------------------------
-print("Status:", response.status_code)
-print("Body:", json.loads(response.body.decode()))
+    # Создаём HttpKernel
+    http_kernel = HttpKernel(container)
+
+    print('Bootstrap complete\n')
+    return core_kernel, http_kernel
