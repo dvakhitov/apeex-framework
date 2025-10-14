@@ -2,10 +2,25 @@
 name = "apeex"
 version = "0.1.0"
 description = "A modular, interface-driven web framework inspired by Symfony, built on top of FastAPI."
-authors = [{ name = "Apeex Team" }]
+authors = [{ name = "Apeex Team", email = "team@apeex.dev" }]
 readme = "README.md"
-requires-python = ">=3.11"
 license = { text = "MIT" }
+requires-python = ">=3.11"
+keywords = ["framework", "fastapi", "symfony", "web", "dependency-injection"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "Topic :: Software Development :: Frameworks"
+]
+
+[project.urls]
+Homepage = "https://github.com/dvakhitov/apeex-framework"
+Documentation = "https://github.com/dvakhitov/apeex-framework"
+Source = "https://github.com/dvakhitov/apeex-framework"
 
 [tool.poetry]
 packages = [{ include = "apeex" }]
@@ -18,15 +33,14 @@ SQLAlchemy = "^2.0.22"
 asyncpg = "^0.30.0"
 aiosqlite = "^0.18.0"
 PyYAML = "^6.0"
-pytest = "^8.4.2"
-pytest-asyncio = "^1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.0.0"
 isort = "^5.13.0"
 flake8 = "^7.0.0"
 mypy = "^1.11.0"
-pytest = "^8.3.0"
+pytest = "^8.4.2"
+pytest-asyncio = "^1.2.0"
 
 [tool.black]
 line-length = 100

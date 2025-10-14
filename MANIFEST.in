@@ -1,0 +1,10 @@
+# Include main package
+recursive-include apeex *
+
+# Exclude unnecessary files
+exclude bundles/*
+exclude scripts/*
+exclude config/*
+exclude tests/*
+exclude *.uml
+exclude *.png
