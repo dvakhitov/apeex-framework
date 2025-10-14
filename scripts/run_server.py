@@ -2,11 +2,14 @@
 from fastapi import FastAPI, Request
 import uvicorn
 from scripts.bootstrap import bootstrap
+from apeex.contracts.http.response_emitter_interface import ResponseEmitterInterface
+
 
 app = FastAPI(title="Apeex Framework Demo")
 
 # Bootstrap возвращает core_kernel и http_kernel
 core_kernel, http_kernel = bootstrap()
+response_emitter: ResponseEmitterInterface = core_kernel.container.get("response_emitter")
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
 async def handle_request(request: Request):
@@ -19,8 +22,8 @@ async def handle_request(request: Request):
     # Обрабатываем и получаем ResponseInterface
     response = http_kernel.handle(apeex_request)
 
-    # Преобразуем в FastAPI Response
-    return response.to_fastapi_response()
+    # Преобразуем через эмиттер (инверсия зависимости)
+    return response_emitter.emit(response)
 
 
 if __name__ == "__main__":

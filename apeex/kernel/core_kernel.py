@@ -27,16 +27,20 @@ class CoreKernel:
         for name, factory in SERVICES.items():
             if container.has(name):
                 continue
+            # Если это класс — создаём экземпляр без аргументов
+            if inspect.isclass(factory):
+                container.set(name, factory())
+                continue
+            # Если это вызываемый объект (функция/лямбда), проверим сигнатуру
             if callable(factory):
                 sig = inspect.signature(factory)
                 if len(sig.parameters) == 0:
-                    # обычная функция без аргументов
                     container.set(name, factory())
                 else:
-                    # фабрика с аргументами (например container)
                     container.set_factory(name, lambda f=factory, c=container: f(c))
-            else:
-                container.set(name, factory)
+                continue
+            # Иначе считаем это уже готовым инстансом
+            container.set(name, factory)
 
         # Build all bundles
         for bundle in self.bundles:

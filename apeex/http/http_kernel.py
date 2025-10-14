@@ -7,6 +7,7 @@ from apeex.contracts.container import ContainerInterface
 from apeex.http.request import Request
 import json
 from starlette.responses import Response
+from apeex.http.response import Response as ApeexResponse
 
 
 class SimpleResponse(ResponseInterface):
@@ -68,6 +69,15 @@ class HttpKernel(HttpKernelInterface):
             return SimpleResponse.from_body({"error": "Not Found"}, status=404)
 
         result = controller_callable(request)
+
+        # Support Apeex Response object by converting to SimpleResponse
+        if isinstance(result, ApeexResponse):
+            body = result.content
+            if isinstance(body, str):
+                body = body.encode("utf-8")
+            elif not isinstance(body, (bytes, bytearray)):
+                body = str(body).encode("utf-8")
+            return SimpleResponse(body=body, status_code=result.status_code, headers=result.headers)
 
         if not isinstance(result, ResponseInterface):
             result = SimpleResponse.from_body(result)

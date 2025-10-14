@@ -10,4 +10,4 @@ class HelloController:
     @Route(path="/hello/{name}", methods=["GET"])
     def greet(self, name: str) -> str:
         print(name)
-        return self.service.say_hello(name)
+        return "просто те"

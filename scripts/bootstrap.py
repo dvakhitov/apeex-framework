@@ -4,7 +4,6 @@ from apeex.kernel.core_kernel import CoreKernel
 from apeex.http.http_kernel import HttpKernel
 from apeex.adapters.http.router_adapter import RouterAdapter
 from apeex.http.controller_resolver import ControllerResolver
-from config.services import SERVICES
 from apeex.bundles.demo_bundle.bundle import DemoBundle
 
 
@@ -14,14 +13,6 @@ def bootstrap() -> tuple[CoreKernel, HttpKernel]:
     # Создаём контейнер
     container = Container()
 
-    # Регистрируем сервисы из конфига
-    for name, factory in SERVICES.items():
-        if callable(factory):
-            # передаем container внутрь фабрики
-            container.set_factory(name, lambda f=factory, c=container: f(c))
-        else:
-            container.set(name, factory())
-
     # Регистрируем RouterAdapter и ControllerResolver
     router = RouterAdapter()
     container.set("router", router)
@@ -30,6 +21,7 @@ def bootstrap() -> tuple[CoreKernel, HttpKernel]:
     # Создаём CoreKernel (главное приложение)
     core_kernel = CoreKernel(container)
     core_kernel.register_bundle(DemoBundle())
+    # Регистрацией сервисов из config.services займётся CoreKernel.bootstrap()
     core_kernel.bootstrap()
     core_kernel.boot()
 
