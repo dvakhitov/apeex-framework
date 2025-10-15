@@ -35,10 +35,6 @@ poetry run mypy .
 poetry run pytest -v
 ```
 
-All comments in code should be in **English**.
-
----
-
 ## ⚙️ DI Container
 
 The framework provides a Dependency Injection container for managing services.
